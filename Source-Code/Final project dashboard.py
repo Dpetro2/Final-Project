@@ -5,6 +5,8 @@ import plotly.graph_objs as go
 from dash import Input, Output, dcc, html
 import pandas as pd
 import plotly.offline as pyo
+import urllib
+import API_caller as api
 
 stateList = [{'label': 'Alabama', 'value': 'AL'},
              {'label': 'Alaska', 'value': 'AK'},
@@ -268,8 +270,9 @@ def render_page_content(pathname):
     [Input('state-selector-dropdown', 'value')]
 )
 def update_figure(selectedState):
-    filtered_df1 = df[df['state'] == selectedState]
-    filtered_df1 = filtered_df1[filtered_df1['MSN'] == 'ESRCB']
+    filtered_df1 = api.create_pd_df('ESRCB')
+    filtered_df1 = filtered_df1[filtered_df1['State'] == selectedState]
+    #filtered_df1 = filtered_df1[filtered_df1['MSN'] == 'ESRCB']
 
     filtered_df2 = df[df['state'] == selectedState]
     filtered_df2 = filtered_df2[filtered_df2['MSN'] == 'ESRCD']
