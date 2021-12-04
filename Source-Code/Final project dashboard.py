@@ -128,9 +128,9 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 # navbar styling
 NAVBAR_STYLE = {
     'position': 'fixed',
-    'top': 80,
+    'top': 0,
     'left': 0,
-    'bottom': 20,
+    'bottom': 0,
     'width': '18rem',
     'padding': '2rem 1rem',
     'background-color': '#FF6544'
@@ -155,7 +155,9 @@ navbar = dbc.Card([
             [
                 dbc.NavLink("About", href='/', active='exact'),
                 dbc.NavLink("Electricity Usage and Price", href='/page-1', active='exact'),
-                dbc.NavLink("graph 2", href='/page-2', active='exact')
+                dbc.NavLink("graph 2", href='/page-2', active='exact'),
+                dbc.NavLink("graph 3", href='/page-3', active='exact'),
+                dbc.NavLink("graph 4", href='/page-4', active='exact')
             ],
             horizontal='left',
             pills=True
@@ -218,7 +220,7 @@ def render_page_content(pathname):
                                 'depth data about individual state production, consumption, and expenditure of '
                                 'residential sector energy. With this we have developed several graphs to articulate '
                                 'the need, and demonstrate the lack of usage, of solar panels.')
-                            ])
+                        ])
                     ], className='card-spacing card-style')
                 ], width={'size': 6}),
                 dbc.Col([
@@ -236,6 +238,7 @@ def render_page_content(pathname):
         ]
     # Line graph page
     elif pathname == '/page-1':
+        content._ = 'main-spacing-linegraph'
         return [
             dbc.Row([
                 dbc.Col([
@@ -249,11 +252,19 @@ def render_page_content(pathname):
                 ], width={'size': 1, 'offset': 11}),
 
                 dbc.Col([
-                    html.H2('Electricity Consumption by Residential Sector', style={'textAlign': 'center'}),
-                    dcc.Graph(id='line-graph1'),
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2('Electricity Consumption by Residential Sector', style={'textAlign': 'center'}),
+                            dcc.Graph(id='line-graph1')
+                        ]),
+                    ], className='graph-style'),
                     html.Br(),
-                    html.H2('Electricity Price in Residential Sector', style={'textAlign': 'center'}),
-                    dcc.Graph(id='line-graph2')
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2('Electricity Price in Residential Sector', style={'textAlign': 'center'}),
+                            dcc.Graph(id='line-graph2')
+                        ])
+                    ], className='graph-style')
                 ], width={'size': 10, 'offset': 1})
             ])
         ]
@@ -287,8 +298,14 @@ def render_page_content(pathname):
                 ])
             ])
         ]
+    elif pathname == '/page-3':
+        return []
+
+    elif pathname == '/page-4':
+        return[]
 
 
+# callback for linegraphs
 @app.callback(
     [Output('line-graph1', 'figure'),
      Output('line-graph2', 'figure')],
@@ -316,6 +333,7 @@ def update_figure(selectedState):
              }]
 
 
+# callback for bargraphs
 @app.callback(
     Output('bar-graph', 'figure'),
     Input('year-selector-slider', 'value')
