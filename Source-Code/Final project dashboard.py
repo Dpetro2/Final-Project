@@ -141,7 +141,7 @@ CONTENT_STYLE = {
     'margin-left': '10rem',
     'margin-right': '0rem',
     'padding': '1rem 2rem',
-    'width': '120rem'
+    # 'background-color': '#FF6544'
 }
 
 navbar = dbc.Card([
@@ -149,7 +149,7 @@ navbar = dbc.Card([
         html.H2("Navbar", className="display-4"),
         html.Hr(),
         html.P(
-            "Select other graphs here!", className="lead"
+            "Select graphs here!", className="lead"
         ),
         dbc.Nav(
             [
@@ -163,14 +163,15 @@ navbar = dbc.Card([
     ]),
 ], style=NAVBAR_STYLE
 )
-content = html.Div(id='page-content', children=[], style=CONTENT_STYLE)
+content = dbc.Container(id='page-content', children=[], style=CONTENT_STYLE, fluid=True, className='main-spacing')
 
 # Layout
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H1('State Residential Sector Energy Consumption, Cost, and Expenditure',
-                        className='text-center bg-primary text-white'),
-                width={'size': 12})
+        dbc.Col([
+            html.H1('Personal Solar Energy'),
+            html.H2('A future that lasts longer than any other')
+        ], width={'size': 9, 'offset': 2}, className='text-center text-white title-style')
     ]),
 
     dcc.Location(id='url'),
@@ -189,76 +190,100 @@ def render_page_content(pathname):
     # About page
     if pathname == '/':
         return [
-            dbc.Container([
-                dbc.Row([
-                    dbc.Col([
-
-                        html.B(
-                            'this is gonna be a hella long about page that introduces the idea of our project, even if our idea is bad')
-                    ])
-                ])
-            ])
-
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H4('Introduction'),
+                            html.P('As our world continues to advance technologically we threaten the '
+                                   'environments around us, our advancements have caused our ecosystems '
+                                   'around earth to rapidly deteriorate, the destruction of our home is '
+                                   'primarily caused by our expulsion of CO2 into the atmosphere by burning '
+                                   'fossil fuels. This tragic loss of biodiversity comes as a forewarning to '
+                                   'the humans on earth; Our planet will not be able to sustain us under its '
+                                   'current treatment. Our use of fossil fuels is amazing as we can see the '
+                                   'accomplishments of humanity over the past 100 years, but should we '
+                                   'continue to strive for progress using the means of such a destructive '
+                                   'tool, we will not live to see what humanity can produce with our '
+                                   'limitless potential.')
+                        ])
+                    ], className='card-style'),
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H4('Our Data'),
+                            html.P(
+                                'Our data was acquired from the U.S. Energy Information Administration who is tasked '
+                                'with conducting comprehensive data collection that covers the full spectrum of energy '
+                                'sources, end uses, and energy flows. We have used their public API to acquire in '
+                                'depth data about individual state production, consumption, and expenditure of '
+                                'residential sector energy. With this we have developed several graphs to articulate '
+                                'the need, and demonstrate the lack of usage, of solar panels.')
+                            ])
+                    ], className='card-spacing card-style')
+                ], width={'size': 6}),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardImg(
+                            src='https://coral.org/wp-content/uploads/2021/09/CoralReef_FrenchPolynesia-1024x681.jpg',
+                            alt='Coral Reef from French Polynesia',
+                            top=True),
+                        dbc.CardBody(
+                            html.P('Coral Reef located in French Polynesia')
+                        )
+                    ], className='card-style')
+                ], width={'size': 6})
+            ], justify='around'),
         ]
     # Line graph page
     elif pathname == '/page-1':
         return [
-            dbc.Container([
-                dbc.Row([
-                    dbc.Col([
-                        dcc.Dropdown(id='state-selector-dropdown',
-                                     placeholder='State',
-                                     options=stateList,
-                                     className='text-dark',
-                                     clearable=False,
-                                     value='NC',
-                                     style={'background-color': '#FF6544'})
-                    ], width={'size': 2, 'offset': 11}),
+            dbc.Row([
+                dbc.Col([
+                    dcc.Dropdown(id='state-selector-dropdown',
+                                 placeholder='State',
+                                 options=stateList,
+                                 className='text-dark',
+                                 clearable=False,
+                                 value='NC',
+                                 style={'background-color': '#FF6544'})
+                ], width={'size': 1, 'offset': 11}),
 
-                    dbc.Col([
-                        html.H2('Electricity Consumption by Residential Sector', style={'textAlign': 'center'}),
-                        dcc.Graph(id='line-graph1'),
-                        html.Br(),
-                        html.H2('Electricity Price in Residential Sector', style={'textAlign': 'center'}),
-                        dcc.Graph(id='line-graph2')
-                    ])
-                ])
+                dbc.Col([
+                    html.H2('Electricity Consumption by Residential Sector', style={'textAlign': 'center'}),
+                    dcc.Graph(id='line-graph1'),
+                    html.Br(),
+                    html.H2('Electricity Price in Residential Sector', style={'textAlign': 'center'}),
+                    dcc.Graph(id='line-graph2')
+                ], width={'size': 10, 'offset': 1})
             ])
         ]
     # Bar graph page
     elif pathname == '/page-2':
         return [
-            dbc.Container([
-                dbc.Row([
-                    dbc.Col([
-                        html.H2('Bar graph showing very cool data!', style={'textAlign': 'center'}),
-                        dcc.Graph(id='bar-graph')
-                    ])
-                ]),
-                dbc.Row([
-                    dbc.Col([
-                        dcc.Slider(id='year-selector-slider',
-                                   min=1960,
-                                   max=2019,
-                                   step=1,
-                                   value=2019,
-                                   className='bg-primary',
-                                   marks={
-                                       1960: {'label': "1960", 'style':{'color': '#FF6544'}},
-                                       1965: {'label': "1965", 'style':{'color': '#FF6544'}},
-                                       1970: {'label': "1970", 'style':{'color': '#FF6544'}},
-                                       1975: {'label': "1975", 'style':{'color': '#FF6544'}},
-                                       1980: {'label': "1980", 'style':{'color': '#FF6544'}},
-                                       1985: {'label': "1985", 'style':{'color': '#FF6544'}},
-                                       1990: {'label': "1990", 'style':{'color': '#FF6544'}},
-                                       1995: {'label': "1995", 'style':{'color': '#FF6544'}},
-                                       2000: {'label': "2000", 'style':{'color': '#FF6544'}},
-                                       2005: {'label': "2005", 'style':{'color': '#FF6544'}},
-                                       2010: {'label': "2010", 'style':{'color': '#FF6544'}},
-                                       2015: {'label': "2015", 'style':{'color': '#FF6544'}},
-                                       2019: {'label': "2019", 'style':{'color': '#FF6544'}}
-                                   })
-                    ])
+            dbc.Row([
+                dbc.Col([
+                    html.H2('Bar graph showing very cool data!', style={'textAlign': 'center'}),
+                    dcc.Graph(id='bar-graph')
+                ])
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    dcc.Slider(id='year-selector-slider',
+                               min=1989,
+                               max=2019,
+                               step=1,
+                               value=2019,
+                               className='blue-background',
+                               marks={
+                                   1989: {'label': "1989", 'style': {'color': '#FF6544'}},
+                                   1990: {'label': "1990", 'style': {'color': '#FF6544'}},
+                                   1995: {'label': "1995", 'style': {'color': '#FF6544'}},
+                                   2000: {'label': "2000", 'style': {'color': '#FF6544'}},
+                                   2005: {'label': "2005", 'style': {'color': '#FF6544'}},
+                                   2010: {'label': "2010", 'style': {'color': '#FF6544'}},
+                                   2015: {'label': "2015", 'style': {'color': '#FF6544'}},
+                                   2019: {'label': "2019", 'style': {'color': '#FF6544'}}
+                               })
                 ])
             ])
         ]
@@ -272,13 +297,14 @@ def render_page_content(pathname):
 def update_figure(selectedState):
     filtered_df1 = api.create_pd_df('ESRCB')
     filtered_df1 = filtered_df1[filtered_df1['State'] == selectedState]
-    #filtered_df1 = filtered_df1[filtered_df1['MSN'] == 'ESRCB']
 
     filtered_df2 = df[df['state'] == selectedState]
     filtered_df2 = filtered_df2[filtered_df2['MSN'] == 'ESRCD']
 
-    line_graph_data1 = [go.Scatter(x=filtered_df1['Year'], y=filtered_df1['data'], mode='lines')]
-    line_graph_data2 = [go.Scatter(x=filtered_df2['Year'], y=filtered_df2['data'], mode='lines')]
+    line_graph_data1 = [
+        go.Scatter(x=filtered_df1['Year'], y=filtered_df1['data'], mode='lines', marker={'color': '#483CA2'})]
+    line_graph_data2 = [
+        go.Scatter(x=filtered_df2['Year'], y=filtered_df2['data'], mode='lines', marker={'color': '#483CA2'})]
     return [{'data': line_graph_data1,
              'layout': go.Layout(title='Electricity Consumed by the residential sector of ' + selectedState,
                                  xaxis={'title': 'Year'},
@@ -300,7 +326,7 @@ def update_figure(selectedYear):
 
     bar_graph_data = [go.Bar(x=filtered_df1['state'], y=filtered_df1['data'])]
     return {'data': bar_graph_data,
-            'layout': go.Layout(title='Residential Solar Energy Consumed by State in ' ,
+            'layout': go.Layout(title='Residential Solar Energy Consumed by State in ',
                                 xaxis={'title': 'State'},
                                 yaxis={'title': 'Billion Btu'})}
 
