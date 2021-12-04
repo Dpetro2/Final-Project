@@ -1,0 +1,26 @@
+.nav-pills .nav-link.active {
+    color: #fff;
+    background-color: #483CA2;
+}
+
+.blue-background{
+background-color: #483CA2;
+}
+
+.card-spacing{
+margin-top: 5rem;
+}
+
+.card-style{
+font-size: 20px;
+background-color: #097054;
+}
+
+.main-spacing{
+margin-top: 5rem;
+}
+
+.title-style{
+background-image: linear-gradient(to right, #483CA2, #097054);
+border-radius: 15px;
+}
