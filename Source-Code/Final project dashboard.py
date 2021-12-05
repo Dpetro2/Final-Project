@@ -302,8 +302,28 @@ def render_page_content(pathname):
         return []
 
     elif pathname == '/page-4':
-        return[]
+        # Heatmap Page
+        filtered_df1 = api.create_pd_df('NGRCB')
+        filtered_df1 = filtered_df1[filtered_df1['Year'] == '2019']
 
+        heatmap_data = [go.Heatmap(x=filtered_df1['State'],
+                                   y=filtered_df1['data'],
+                                   z=df['MSN'].values.tolist(),
+                                   colorscale='Yellow')]
+        return [
+            dbc.Row([
+                dbc.Col([
+                    html.H2('A Heatmap that shows information for Natural Gas', style={'textAlign': 'left'}),
+                    dcc.Graph(id='heat-map', figure={'data': heatmap_data,
+                                                     'layout': go.Layout(title='Residential Coal Used ',
+                                                                         xaxis={'title': 'State'},
+                                                                         yaxis={'title': 'Energy'},
+                                                                         )}),
+
+                ])
+            ]),
+
+        ]
 
 # callback for linegraphs
 @app.callback(
