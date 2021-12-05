@@ -2,11 +2,12 @@ import dash
 import dash_bootstrap_components as dbc
 import numpy as np
 import plotly.graph_objs as go
-from dash import Input, Output, dcc, html
+from dash import Input, Output, dcc, html, State
 import pandas as pd
 import plotly.offline as pyo
 import urllib
 import API_caller as api
+import ConversionCalc as calc
 
 stateList = [{'label': 'Alabama', 'value': 'AL'},
              {'label': 'Alaska', 'value': 'AK'},
@@ -120,7 +121,7 @@ yearList = [{'label': '1960', 'value': '1960'},
             {'label': '2018', 'value': '2018'},
             {'label': '2019', 'value': '2019'}]
 
-# Load csv into dataframe
+# Prepare Data
 df = pd.read_csv('C:/Users/jauga/PycharmProjects/Final_Prject/Database/Complete_SEDS_only_RC.csv')
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
@@ -128,7 +129,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 # navbar styling
 NAVBAR_STYLE = {
     'position': 'fixed',
-    'top': 0,
+    'top': 80,
     'left': 0,
     'bottom': 0,
     'width': '18rem',
@@ -140,7 +141,7 @@ NAVBAR_STYLE = {
 CONTENT_STYLE = {
     'margin-left': '10rem',
     'margin-right': '0rem',
-    'padding': '1rem 2rem',
+    'padding': '1rem 2rem'
     # 'background-color': '#FF6544'
 }
 
@@ -165,7 +166,7 @@ navbar = dbc.Card([
     ]),
 ], style=NAVBAR_STYLE
 )
-content = dbc.Container(id='page-content', children=[], style=CONTENT_STYLE, fluid=True, className='main-spacing')
+content = dbc.Container(id='page-content', children=[], style=CONTENT_STYLE, className='main-spacing', fluid=True)
 
 # Layout
 app.layout = dbc.Container([
@@ -209,6 +210,7 @@ def render_page_content(pathname):
                                    'tool, we will not live to see what humanity can produce with our '
                                    'limitless potential.')
                         ])
+
                     ], className='card-style'),
                     dbc.Card([
                         dbc.CardBody([
@@ -221,7 +223,7 @@ def render_page_content(pathname):
                                 'residential sector energy. With this we have developed several graphs to articulate '
                                 'the need, and demonstrate the lack of usage, of solar panels.')
                         ])
-                    ], className='card-spacing card-style')
+                    ], className='card-style card-spacing')
                 ], width={'size': 6}),
                 dbc.Col([
                     dbc.Card([
@@ -232,10 +234,29 @@ def render_page_content(pathname):
                         dbc.CardBody(
                             html.P('Coral Reef located in French Polynesia')
                         )
-                    ], className='card-style')
-                ], width={'size': 6})
-            ], justify='around'),
+                    ], className='card-style'),
+                ], width={'size': 5, 'offset': 0}),
+            ], className='row-spacing'),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H4('How much would you save?', className='text-white'),
+                            html.P('Enter your yearly power bill and see how much only 4 solar panels could save you!',
+                                   className='text-white'),
+                            dcc.Textarea(id='calc-text', className='blue-background text-light'),
+                            html.Br(),
+                            dbc.Button(id='update-calc-card', className='calc-button-style text-dark',
+                                       children='Calculate!'),
+                            html.Br(),
+                            html.H2(id='calc-output')
+
+                        ], className='text-center')
+                    ], className='card-style calc-spacing text-dark')
+                ], width={'size': 6}),
+            ], className='row-spacing row-spacing-vertical')
         ]
+
     # Line graph page
     elif pathname == '/page-1':
         content._ = 'main-spacing-linegraph'
@@ -268,25 +289,31 @@ def render_page_content(pathname):
                 ], width={'size': 10, 'offset': 1})
             ])
         ]
+
     # Bar graph page
     elif pathname == '/page-2':
         return [
             dbc.Row([
                 dbc.Col([
-                    html.H2('Bar graph showing very cool data!', style={'textAlign': 'center'}),
-                    dcc.Graph(id='bar-graph')
+                    html.H2('stackedbargraph', style={'textAlign': 'center'}),
+                    dcc.Graph(id='stackedbar-graph')
                 ])
             ]),
             dbc.Row([
                 dbc.Col([
                     dcc.Slider(id='year-selector-slider',
-                               min=1989,
+                               min=1960,
                                max=2019,
                                step=1,
                                value=2019,
                                className='blue-background',
                                marks={
-                                   1989: {'label': "1989", 'style': {'color': '#FF6544'}},
+                                   1960: {'label': "1960", 'style': {'color': '#FF6544'}},
+                                   1965: {'label': "1965", 'style': {'color': '#FF6544'}},
+                                   1970: {'label': "1970", 'style': {'color': '#FF6544'}},
+                                   1975: {'label': "1975", 'style': {'color': '#FF6544'}},
+                                   1980: {'label': "1980", 'style': {'color': '#FF6544'}},
+                                   1985: {'label': "1985", 'style': {'color': '#FF6544'}},
                                    1990: {'label': "1990", 'style': {'color': '#FF6544'}},
                                    1995: {'label': "1995", 'style': {'color': '#FF6544'}},
                                    2000: {'label': "2000", 'style': {'color': '#FF6544'}},
@@ -298,18 +325,61 @@ def render_page_content(pathname):
                 ])
             ])
         ]
+
+
     elif pathname == '/page-3':
-        return []
+
+        return [
+            dbc.Row([
+
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2('Renewable Energy/Natural Gas Production per State Population'
+                                    , style={'textAlign': 'center'}),
+                            dcc.Graph(id='bubble-chart')])
+                    ], className='graph-style')
+                ])
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            dcc.Slider(id='year-selector-slider2',
+                                       min=1960,
+                                       max=2019,
+                                       step=1,
+                                       value=2019,
+                                       className='slider-style',
+                                       marks={
+                                           1960: {'label': "1960", 'style': {'color': '#FF6544'}},
+                                           1965: {'label': "1965", 'style': {'color': '#FF6544'}},
+                                           1970: {'label': "1970", 'style': {'color': '#FF6544'}},
+                                           1975: {'label': "1975", 'style': {'color': '#FF6544'}},
+                                           1980: {'label': "1980", 'style': {'color': '#FF6544'}},
+                                           1985: {'label': "1985", 'style': {'color': '#FF6544'}},
+                                           1990: {'label': "1990", 'style': {'color': '#FF6544'}},
+                                           1995: {'label': "1995", 'style': {'color': '#FF6544'}},
+                                           2000: {'label': "2000", 'style': {'color': '#FF6544'}},
+                                           2005: {'label': "2005", 'style': {'color': '#FF6544'}},
+                                           2010: {'label': "2010", 'style': {'color': '#FF6544'}},
+                                           2015: {'label': "2015", 'style': {'color': '#FF6544'}},
+                                           2019: {'label': "2019", 'style': {'color': '#FF6544'}}
+                                       })
+                        ])
+                    ], className='slider-style')
+                ])
+            ])
+        ]
 
     elif pathname == '/page-4':
-        # Heatmap Page
         filtered_df1 = api.create_pd_df('NGRCB')
         filtered_df1 = filtered_df1[filtered_df1['Year'] == '2019']
 
         heatmap_data = [go.Heatmap(x=filtered_df1['State'],
                                    y=filtered_df1['data'],
-                                   z=df['MSN'].values.tolist(),
-                                   colorscale='Yellow')]
+                                   z=filtered_df1['MSN'].values.tolist(),
+                                   colorscale='Jet')]
         return [
             dbc.Row([
                 dbc.Col([
@@ -325,6 +395,7 @@ def render_page_content(pathname):
 
         ]
 
+
 # callback for linegraphs
 @app.callback(
     [Output('line-graph1', 'figure'),
@@ -332,16 +403,16 @@ def render_page_content(pathname):
     [Input('state-selector-dropdown', 'value')]
 )
 def update_figure(selectedState):
-    filtered_df1 = api.create_pd_df('ESRCB')
-    filtered_df1 = filtered_df1[filtered_df1['State'] == selectedState]
+    line_graph_data1 = api.create_pd_df('ESRCB')
+    line_graph_data2 = api.create_pd_df('ESRCD')
 
-    filtered_df2 = df[df['state'] == selectedState]
-    filtered_df2 = filtered_df2[filtered_df2['MSN'] == 'ESRCD']
+    line_graph_data1 = line_graph_data1[line_graph_data1['State'] == selectedState]
+    line_graph_data2 = line_graph_data2[line_graph_data2['State'] == selectedState]
 
     line_graph_data1 = [
-        go.Scatter(x=filtered_df1['Year'], y=filtered_df1['data'], mode='lines', marker={'color': '#483CA2'})]
+        go.Scatter(x=line_graph_data1['Year'], y=line_graph_data1['data'], mode='lines', marker={'color': '#483CA2'})]
     line_graph_data2 = [
-        go.Scatter(x=filtered_df2['Year'], y=filtered_df2['data'], mode='lines', marker={'color': '#483CA2'})]
+        go.Scatter(x=line_graph_data2['Year'], y=line_graph_data2['data'], mode='lines', marker={'color': '#483CA2'})]
     return [{'data': line_graph_data1,
              'layout': go.Layout(title='Electricity Consumed by the residential sector of ' + selectedState,
                                  xaxis={'title': 'Year'},
@@ -355,18 +426,105 @@ def update_figure(selectedState):
 
 # callback for bargraphs
 @app.callback(
-    Output('bar-graph', 'figure'),
+    Output('stackedbar-graph', 'figure'),
     Input('year-selector-slider', 'value')
 )
 def update_figure(selectedYear):
-    filtered_df1 = df[df['Year'] == selectedYear]
-    filtered_df1 = filtered_df1[filtered_df1['MSN'] == 'SORCB']
+    trace_1_data = api.create_pd_df('CLRCB')
+    trace_2_data = api.create_pd_df('PARCP')
+    trace_3_data = api.create_pd_df('NGRCB')
+    trace_4_data = api.create_pd_df('SORCB')
 
-    bar_graph_data = [go.Bar(x=filtered_df1['state'], y=filtered_df1['data'])]
-    return {'data': bar_graph_data,
-            'layout': go.Layout(title='Residential Solar Energy Consumed by State in ',
-                                xaxis={'title': 'State'},
-                                yaxis={'title': 'Billion Btu'})}
+    trace_1_data = trace_1_data[trace_1_data['Year'] == str(selectedYear)]
+    trace_2_data = trace_2_data[trace_2_data['Year'] == str(selectedYear)]
+    trace_3_data = trace_3_data[trace_3_data['Year'] == str(selectedYear)]
+    trace_4_data = trace_4_data[trace_4_data['Year'] == str(selectedYear)]
+
+    trace_1_data = trace_1_data.groupby(['State']).agg(
+        {'data': 'sum'}).reset_index()
+    trace_2_data = trace_2_data.groupby(['State']).agg(
+        {'data': 'sum'}).reset_index()
+    trace_3_data = trace_3_data.groupby(['State']).agg(
+        {'data': 'sum'}).reset_index()
+    trace_4_data = trace_4_data.groupby(['State']).agg(
+        {'data': 'sum'}).reset_index()
+
+    trace1 = go.Bar(
+        x=trace_1_data['State'],
+        y=trace_1_data['data'],
+        name='Coal',
+        marker={'color': 'Black'})
+
+    trace2 = go.Bar(
+        x=trace_2_data['State'],
+        y=trace_2_data['data'],
+        name='Petroleum',
+        marker={'color': 'grey'})
+
+    trace3 = go.Bar(
+        x=trace_3_data['State'],
+        y=trace_3_data['data'],
+        name='Natural Gas',
+        marker={'color': 'blue'})
+
+    trace4 = go.Bar(
+        x=trace_4_data['State'],
+        y=trace_4_data['data'],
+        name='Solar Energy',
+        marker={'color': 'orange'})
+
+    stackedbar_graph_data = [trace1, trace2, trace3, trace4]
+
+    return {'data': stackedbar_graph_data,
+            'layout': go.Layout(title='Residential Solar Energy Consumed by State in ' + str(selectedYear),
+                                showlegend=True,
+                                barmode='stack',
+                                xaxis={'categoryorder': 'category descending'},
+                                yaxis={'title': 'Energy usage'})}
+
+
+# callback for about page button
+@app.callback(
+    [Output('calc-output', 'children')],
+    [Input('update-calc-card', 'n_clicks')],
+    [State('state-selector-dropdown', 'value'),
+     State('calc-text', 'value')]
+)
+def update_calc(n_clicks, state, money):
+    print('WE GOT CLICKED')
+    if (n_clicks > 1):
+        print(n_clicks)
+    return ['You Saved ']
+
+
+@app.callback(
+    Output('bubble-chart', 'figure'),
+    Input('year-selector-slider2', 'value')
+)
+def update_figure(selectedYear):
+    bubble_Graph_Data1 = api.create_pd_df('NGMPB')
+    bubble_Graph_Data2 = api.create_pd_df('REPRB')
+    bubble_Graph_Data3 = api.create_pd_df('TPOPP')
+
+    bubble_Graph_Data1 = bubble_Graph_Data1[bubble_Graph_Data1['Year'] == str(selectedYear)]
+    bubble_Graph_Data2 = bubble_Graph_Data2[bubble_Graph_Data2['Year'] == str(selectedYear)]
+    bubble_Graph_Data3 = bubble_Graph_Data3[bubble_Graph_Data3['Year'] == str(selectedYear)]
+
+    bubble_chart_data = [go.Scatter(x=bubble_Graph_Data2['data'],
+                                    y=bubble_Graph_Data1['data'],
+                                    text=bubble_Graph_Data1['State'],
+                                    mode='markers',
+                                    marker=dict(size=bubble_Graph_Data3['data'] / 100,
+                                                color=bubble_Graph_Data1['data'] / 30000,
+                                                colorscale="temps",
+                                                showscale=True),
+                                    )]
+    return {'data': bubble_chart_data,
+            'layout': go.Layout(title='Renewable Energy/Natural Gas Production per State Population '
+                                      + str(selectedYear),
+                                xaxis={'title': 'Renewable Energy'},
+                                yaxis={'title': 'Natural Gas'},
+                                height=750)}
 
 
 if __name__ == '__main__':
