@@ -44,16 +44,29 @@ margin-top: 2rem;
 }
 
 .calc-spacing{
-margin-top: 0rem;
-margin-left: 10.35rem;
+margin-top: 4rem;
+margin-right: 5rem;
 }
 
 .calc-button-style{
 background-color: #FF6544;
+margin-left: 0rem;
+height: 40px;
+width: 150px;
 }
 
 .slider-style{
 background-color: #483CA2;
-margin-top: 3rem;
+margin-top: 1rem;
+}
+
+.textbox-style{
+height: 50px;
+width: 200px;
+margin-top: 1rem;
+}
+
+.textbox-spacing{
+margin-left: 1rem
 }
 
