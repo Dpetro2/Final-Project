@@ -131,7 +131,7 @@ NAVBAR_STYLE = {
     'position': 'fixed',
     'top': 80,
     'left': 0,
-    'bottom': 0,
+    'bottom': 20,
     'width': '18rem',
     'padding': '2rem 1rem',
     'background-color': '#FF6544'
@@ -150,7 +150,7 @@ navbar = dbc.Card([
         html.H2("Navbar", className="display-4"),
         html.Hr(),
         html.P(
-            "Select graphs here!", className="lead"
+            "Select pages here!", className="lead"
         ),
         dbc.Nav(
             [
@@ -158,7 +158,8 @@ navbar = dbc.Card([
                 dbc.NavLink("Electricity Usage and Price", href='/page-1', active='exact'),
                 dbc.NavLink("Comparison of energy sources", href='/page-2', active='exact'),
                 dbc.NavLink("expenditure vs solar usage", href='/page-3', active='exact'),
-                dbc.NavLink("Comparison of petroleum and Solar", href='/page-4', active='exact')
+                dbc.NavLink("Comparison of petroleum and Solar", href='/page-4', active='exact'),
+                dbc.NavLink("Conclusion", href='/page-5', active='exact')
             ],
             horizontal='left',
             pills=True
@@ -172,8 +173,8 @@ content = dbc.Container(id='page-content', children=[], style=CONTENT_STYLE, cla
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
-            html.H1('Personal Solar Energy'),
-            html.H2('A future that lasts longer than any other')
+            html.H1('Solar Savings'),
+            html.H2('A Future That Lasts Longer Than Any Other!')
         ], width={'size': 9, 'offset': 2}, className='text-center text-white title-style')
     ]),
 
@@ -235,13 +236,12 @@ def render_page_content(pathname):
                             html.P('Coral Reef located in French Polynesia')
                         )
                     ], className='card-style'),
-                ], width={'size': 5, 'offset': 0}),
+                ], width={'size': 6, 'offset': 0}),
             ], className='row-spacing'),
         ]
 
     # Line graph page
     elif pathname == '/page-1':
-        content._ = 'main-spacing-linegraph'
         return [
             dbc.Row([
                 dbc.Col([
@@ -251,24 +251,54 @@ def render_page_content(pathname):
                                  className='text-dark',
                                  clearable=False,
                                  value='NC',
-                                 style={'background-color': '#FF6544'})
-                ], width={'size': 1, 'offset': 11}),
+                                 style={'background-color': '#FF6544'}),
+                    html.Br()
+                ], width={'size': 2, 'offset': 10})
+            ]),
 
+            dbc.Row([
                 dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H2('Electricity Consumption by Residential Sector', style={'textAlign': 'center'}),
+                            html.H2('Electricity Usage', style={'textAlign': 'center'}),
                             dcc.Graph(id='line-graph1')
                         ]),
                     ], className='graph-style'),
                     html.Br(),
+                ], width={'size': 10, 'offset': 0}),
+                dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H2('Electricity Price in Residential Sector', style={'textAlign': 'center'}),
+                            html.H4('Usage Graph', className='text-center'),
+                            html.P('In this graph we can see over time the steady increase of the usage of '
+                                   'electricity, this trend has been recognized by many different groups and is sure '
+                                   'to continue as we move forward developing new technology.')
+                        ])
+                    ], className='card-style card-spacing')
+                ])
+            ]),
+
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2('Electricity Price', style={'textAlign': 'center'}),
                             dcc.Graph(id='line-graph2')
                         ])
-                    ], className='graph-style')
-                ], width={'size': 10, 'offset': 1})
+                    ], className='graph-style'),
+                ], width={'size': 10, 'offset': 0, 'order': 2}),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H4('Price Graph', className='text-center'),
+                            html.P('In this graph we can see over time the steady increase of the price of '
+                                   'electricity, when observed individually it only makes sense that as the demand '
+                                   'increases so does the price however, paired with the graph above we can see how '
+                                   'our future will see paying more money for more energy as both have experienced this'
+                                   ' trend.')
+                        ])
+                    ], className='card-style card-spacing')
+                ], width={'size': 2, 'offset': 0, 'order': 1})
             ])
         ]
 
@@ -279,7 +309,24 @@ def render_page_content(pathname):
                 dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H2('stackedbargraph', style={'textAlign': 'center'}),
+                            html.H4('Consumption Chart', className='text-center'),
+                            html.P(
+                                'This chart displays a comparison of some of the most commonly utilized energy sources, In it '
+                                'we can see just how under utilized solar energy is in residential homes and '
+                                'businesses. The primary energy source for homes is natural gas, and as seen '
+                                'before the cost of using is unsustainable, if this pattern continues ultimatley '
+                                'we will see the inability for people to have the electricity needed to power '
+                                'their homes.')
+                        ])
+                    ], className='card-style'),
+                    html.Br()
+                ], width={'size': 8, 'offset': 2})
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2('Energy Used from Different Energy Sources', style={'textAlign': 'center'}),
                             dcc.Graph(id='stackedbar-graph')
                         ])
                     ], className='graph-style')
@@ -314,10 +361,79 @@ def render_page_content(pathname):
             ])
         ]
 
-    # bubble chart
+    # Muliline graph
     elif pathname == '/page-3':
-
         return [
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H4('MultiLine Chart', className='text-center'),
+                            html.P('Below is a multi line chart comparing a given state\'s natural gas, '
+                                   'petroleum, and kerosene prices. We can see that overtime the prices of each '
+                                   'of these fossil fuels have continuously increased, seeing this we can understand '
+                                   'that as the fossil fuels get used up and earth\'s supply dwindles these prices will '
+                                   'only continue to rise. As these resources continue to become more expensive '
+                                   'people will look for alternatives like solar energy as the way to cheaply acquire '
+                                   'electricity. While these prices trend up, the price of solar energy continues to decrease as '
+                                   'installing panels becomes cheaper and the returns from solar panels is '
+                                   'absolutely free every year!')
+                        ])
+                    ], className='card-style'),
+                    html.Br()
+                ], width={'size': 10, 'offset': 1})
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    dcc.Dropdown(id='state-selector-dropdown2',
+                                 placeholder='State',
+                                 options=stateList,
+                                 className='text-dark',
+                                 clearable=False,
+                                 value='NC',
+                                 style={'background-color': '#FF6544', 'margin-bottom': '1rem', 'margin-right': '1rem',
+                                        'margin-top': '1rem'})
+                ], width={'size': 2, 'offset': 10})
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2(
+                                'Price\'s of Different Energy Sources',
+                                style={'textAlign': 'center'}),
+                            dcc.Graph(id='multiline-graph')
+                        ])
+                    ], className='graph-style')
+
+                ])
+            ]),
+
+        ]
+
+    # bubble chart
+    elif pathname == '/page-4':
+        return [
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H4('Bubble Chart', className='text-center'),
+                            html.H5('In the bubble chart below the height of the bubble is determined by how much '
+                                    'each state spent on electricity, while the x-axis shows the population of each '
+                                    'state. The size of each bubble is that states total solar energy usage.',
+                                    className='text-center'),
+                            html.P('This comparison shows us that despite california having a larger population than '
+                                   'Texas, California spent less in the year 2019 on purchasing energy, '
+                                   'this corelation likely has many more points to it however, the amount of solar '
+                                   'energy that California produces (as seen in the stacked bar chart) shows that '
+                                   'their way of producing energy for home owners is ultimately cheaper.',
+                                   style={'margin-top': '2rem'})
+                        ])
+                    ], className='card-style'),
+                    html.Br()
+                ], width={'size': 10, 'offset': 1})
+            ]),
             dbc.Row([
                 dbc.Col([
                     dbc.Card([
@@ -357,36 +473,76 @@ def render_page_content(pathname):
             ])
         ]
 
-    # Muliline graph
-    elif pathname == '/page-4':
+    # learn more!
+    elif pathname == '/page-5':
         return [
-            dbc.Row([
-                dbc.Col([
-                    dcc.Dropdown(id='state-selector-dropdown2',
-                                 placeholder='State',
-                                 options=stateList,
-                                 className='text-dark',
-                                 clearable=False,
-                                 value='NC',
-                                 style={'background-color': '#FF6544'})
-                ])
-            ]),
             dbc.Row([
                 dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H2(
-                                'petroleum products consumed by the residential sector vs Solar energy consumed by the residential sector',
-                                style={'textAlign': 'center'}),
-                            dcc.Graph(id='multiline-graph')
+                            html.H3('What can we do?'),
+                            html.P(
+                                'Seeing the persistent rise of prices and consumption can leave you feeling like the end is already here. How can someone avoid the inevitable cost of energy as we march forward, and how can we prevent more damage to the environment?'),
+                            html.H4('Install Solar Panels!'),
+                            html.P(
+                                'Installing solar panels is the best way for you to reduce your usage of fossil fuels as a means to power your home and save money longterm as prices continue to increase. Solar panels return energy straight back into your home, and once set up they pay for themselves and more overtime. By swapping to solar energy you could save money every year on your power bill by producing the energy yourself! This way we save on both cash and CO2 emissions')
                         ])
-                    ], className='graph-style')
+                    ], className='card-style')
+                ], width={'size': 10}),
 
-                ])
             ]),
 
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H2('How much would you save?', className='text-white'),
+                            html.P(
+                                'Select your state, enter your yearly power bill on the left and enter the number of solar panels you\'d want on the right and see how much you could save!',
+                                className='text-white'),
+                            dcc.Dropdown(id='state-selector-dropdown2',
+                                         placeholder='State',
+                                         options=stateList,
+                                         className='text-dark',
+                                         clearable=False,
+                                         value='NC',
+                                         style={'background-color': '#FF6544'}),
+                            dcc.Textarea(id='calc-text', className='blue-background text-white textbox-style'),
+                            dcc.Textarea(id='solar-text',
+                                         className='blue-background text-white textbox-style textbox-spacing'),
+                            html.Br(),
+                            html.Button(id='update-calc-card', className='calc-button-style text-dark',
+                                        children='Calculate!'),
+                            html.Br(),
+                            html.H4(id='calc-output', className='text-white'),
+                            html.H4(id='calc-output2', className='text-white')
+
+                        ], className='text-center')
+                    ], className='card-style calc-spacing text-dark')
+                ], width={'size': 4, 'offset': 0}),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Wanna know more?'),
+                            html.P('Transitioning our world to solar energy is a complicated process that will take a lot of time, but if you\'re interested in getting ahead of everyone else, you can learn more by clicking the button below!')
+                        ]),
+                            dbc.Button('Learn More!', href= 'https://www.energysage.com/solar-panels/nc/', className='blue-background', style={'margin-top': '2rem'})
+                    ], className='card-style', style={'margin-top': '4rem'})
+                ], width={'size': 2, 'offset': 0}),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Iframe(width="800", height="600", src="https://www.youtube.com/embed/HJYEKrIRGNE",
+                                        title="YouTube video player",
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture")
+                        ])
+                    ], className='card-style', style={'margin-left': '4rem', 'width': '830px', 'margin-top': '1rem'})
+                ], width={'size': 5, 'offset': 1})
+            ])
         ]
 
+
+# CALLBACKS
 
 # callback for linegraph
 @app.callback(
@@ -406,11 +562,11 @@ def update_figure(selectedState):
     line_graph_data2 = [
         go.Scatter(x=line_graph_data2['Year'], y=line_graph_data2['data'], mode='lines', marker={'color': '#483CA2'})]
     return [{'data': line_graph_data1,
-             'layout': go.Layout(title='Electricity Consumed by the residential sector of ' + selectedState,
+             'layout': go.Layout(title='Electricity Consumed by ' + selectedState,
                                  xaxis={'title': 'Year'},
                                  yaxis={'title': 'Billion BTU'})},
             {'data': line_graph_data2,
-             'layout': go.Layout(title='Electricity price in the residential sector of ' + selectedState,
+             'layout': go.Layout(title='Electricity price in ' + selectedState,
                                  xaxis={'title': 'Year'},
                                  yaxis={'title': 'Dollars per Million BTU'})
              }]
@@ -422,7 +578,6 @@ def update_figure(selectedState):
     Input('year-selector-slider', 'value')
 )
 def update_figure(selectedYear):
-
     trace_1_data = api.create_pd_df('NGRCB')
     trace_2_data = api.create_pd_df('PARCP')
     trace_3_data = api.create_pd_df('SORCB')
@@ -455,30 +610,36 @@ def update_figure(selectedYear):
         x=trace_4_data['State'],
         y=trace_4_data['data'],
         name='Kerosene',
-        marker={'color': 'crimson'},)
+        marker={'color': 'crimson'}, )
 
     stackedbar_graph_data = [trace1, trace2, trace3, trace4]
 
     return {'data': stackedbar_graph_data,
-            'layout': go.Layout(title='Residential Solar Energy Consumed by State in ' + str(selectedYear),
+            'layout': go.Layout(title='Energy Resources Consumed by State in ' + str(selectedYear),
                                 showlegend=True,
                                 barmode='stack',
-                                xaxis={'title': 'Energy usage'},
+                                xaxis={'title': 'Energy usage', 'categoryorder': 'total descending'},
                                 yaxis={'title': 'Billion BTU'})}
 
 
-# callback for about page button
-@app.callback(
-    [Output('calc-output', 'children')],
-    [Input('update-calc-card', 'n_clicks')],
-    [State('state-selector-dropdown', 'value'),
-     State('calc-text', 'value')]
-)
-def update_calc(n_clicks, state, money):
-    print('WE GOT CLICKED')
-    if (n_clicks > 1):
-        print(n_clicks)
-    return ['You Saved ']
+# callback for calc button
+@app.callback(Output('calc-output', 'children'),
+              Output('calc-output2', 'children'),
+              Input('update-calc-card', 'n_clicks'),
+              State('calc-text', 'value'),
+              State('solar-text', 'value'),
+              State('state-selector-dropdown2', 'value'))
+def update_calc(n_clicks, text, panels, state):
+    if type(text) is None:
+        return
+    elif str.isnumeric(text) == 0 or str.isnumeric(panels) == 0:
+        return ['whoops, that is not a number']
+    else:
+        x = float(text)
+        y = calc.cost_converter(state, int(text), int(panels))
+        z = np.round(x - y, decimals=2)
+        return ['Your new bill could be ' + str(calc.cost_converter(state, int(text), int(panels))) + ' per year!',\
+               'Saving you ' + str(z) + ' per year!']
 
 
 # callback for bubble chart
@@ -487,11 +648,10 @@ def update_calc(n_clicks, state, money):
     Input('year-selector-slider2', 'value')
 )
 def update_figure(selectedYear):
+    print('callback')
     bubble_Graph_Data1 = api.create_pd_df('ESRCV')
-    bubble_Graph_Data2 = api.create_pd_df('SORCB')
-    bubble_Graph_Data3 = api.create_pd_df('TPOPP')
-
-    print(bubble_Graph_Data2)
+    bubble_Graph_Data2 = api.create_pd_df('TPOPP')
+    bubble_Graph_Data3 = api.create_pd_df('SORCB')
 
     bubble_Graph_Data1 = bubble_Graph_Data1[bubble_Graph_Data1['Year'] == str(selectedYear)]
     bubble_Graph_Data2 = bubble_Graph_Data2[bubble_Graph_Data2['Year'] == str(selectedYear)]
@@ -507,9 +667,9 @@ def update_figure(selectedYear):
                                                 showscale=True),
                                     )]
     return {'data': bubble_chart_data,
-            'layout': go.Layout(title='Comparison of expenditure to state population and consumption of Solar energy'
+            'layout': go.Layout(title='Comparison of state expenditure to population and consumption of Solar energy '
                                       + str(selectedYear),
-                                xaxis={'title': 'Billion BTU'},
+                                xaxis={'title': 'Thousand people'},
                                 yaxis={'title': 'Million Dollars'},
                                 height=750)}
 
@@ -520,20 +680,23 @@ def update_figure(selectedYear):
     Input('state-selector-dropdown2', 'value')
 )
 def update_figure(selectedState):
-    trace_1_data = api.create_pd_df('PARCB')
-    trace_2_data = api.create_pd_df('SORCB')
+    trace_1_data = api.create_pd_df('PARCD')
+    trace_2_data = api.create_pd_df('KSRCD')
+    trace_3_data = api.create_pd_df('NGRCD')
 
     trace_1_data = trace_1_data[trace_1_data['State'] == str(selectedState)]
     trace_2_data = trace_2_data[trace_2_data['State'] == str(selectedState)]
+    trace_3_data = trace_3_data[trace_3_data['State'] == str(selectedState)]
 
-    trace1 = go.Scatter(x=trace_1_data['Year'], y=trace_1_data['data'], mode='lines', name='PARCB')
-    trace2 = go.Scatter(x=trace_2_data['Year'], y=trace_2_data['data'], mode='lines', name='SORCB')
-    data_multiline = [trace1, trace2]
+    trace1 = go.Scatter(x=trace_1_data['Year'], y=trace_1_data['data'], mode='lines', name='Petroleum')
+    trace2 = go.Scatter(x=trace_2_data['Year'], y=trace_2_data['data'], mode='lines', name='Kerosene')
+    trace3 = go.Scatter(x=trace_3_data['Year'], y=trace_3_data['data'], mode='lines', name='Natural Gas')
+    data_multiline = [trace1, trace2, trace3]
 
     return {'data': data_multiline,
-            'layout': go.Layout(title='petroleum products consumed by the residential sector vs Solar energy consumed by the residential sector' + selectedState,
+            'layout': go.Layout(title='Prices of Petroleum, Kerosene, and Natural gas in ' + selectedState,
                                 xaxis={'title': 'Year'},
-                                yaxis={'title': 'Billion BTU'})}
+                                yaxis={'title': 'Dollars per million BTU'})}
 
 
 if __name__ == '__main__':
