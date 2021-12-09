@@ -122,7 +122,7 @@ yearList = [{'label': '1960', 'value': '1960'},
             {'label': '2019', 'value': '2019'}]
 
 # Prepare Data
-df = pd.read_csv('C:/Users/jauga/PycharmProjects/Final_Prject/Database/Complete_SEDS_only_RC.csv')
+df = pd.read_csv('C:/Users/cahun/PycharmProjects/FinalProject/Database/Complete_SEDS_only_RC.csv')
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 
@@ -155,11 +155,11 @@ navbar = dbc.Card([
         dbc.Nav(
             [
                 dbc.NavLink("About", href='/', active='exact'),
-                dbc.NavLink("Electricity Usage and Price", href='/page-1', active='exact'),
+                dbc.NavLink("Electricity trends", href='/page-1', active='exact'),
                 dbc.NavLink("Comparison of energy sources", href='/page-2', active='exact'),
-                dbc.NavLink("expenditure vs solar usage", href='/page-3', active='exact'),
-                dbc.NavLink("Comparison of petroleum and Solar", href='/page-4', active='exact'),
-                dbc.NavLink("Conclusion", href='/page-5', active='exact')
+                dbc.NavLink("Energy source prices", href='/page-3', active='exact'),
+                dbc.NavLink("Electricity expenditure vs solar energy usage", href='/page-4', active='exact'),
+                dbc.NavLink("Learn more", href='/page-5', active='exact')
             ],
             horizontal='left',
             pills=True
@@ -532,12 +532,12 @@ def render_page_content(pathname):
                 dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
-                            html.Iframe(width="800", height="600", src="https://www.youtube.com/embed/HJYEKrIRGNE",
+                            html.Iframe(width="650", height="450", src="https://www.youtube.com/embed/HJYEKrIRGNE",
                                         title="YouTube video player",
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture")
                         ])
-                    ], className='card-style', style={'margin-left': '4rem', 'width': '830px', 'margin-top': '1rem'})
-                ], width={'size': 5, 'offset': 1})
+                    ], className='card-style', style={'margin-left': '4rem', 'width': '680px', 'margin-top': '1rem'})
+                ], width={'size': 5, 'offset': 0})
             ])
         ]
 
